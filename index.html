@@ -14,6 +14,9 @@
 <div class="brand"><h1>OSIM HIGHER INSTITUTE</h1><p>LIBRARY · نظام طلب الاستعارة الإلكتروني</p></div>
 <div class="card">
 <div class="tabs"><button class="tab active" onclick="tab('student',this)">الطالب</button></div>
+<div style="text-align:center;margin:18px 0 6px">
+<button class="btn secondary" type="button" onclick="adminLogin()">🔐 دخول المسؤول</button>
+</div>
 <section id="student" class="panel">
 <div class="notice">مدة الاستعارة <b>14 يومًا</b>، ولا يوجد تجديد إلكتروني.</div>
 <h2>البحث عن كتاب</h2>
@@ -46,6 +49,19 @@ async function adminReturn(id){if(!confirm('تأكيد تسجيل إرجاع ا�
 async function decide(id,type){let note='';if(type==='reject'){note=prompt('سبب الرفض (اختياري):')||''}else{if(!confirm('تأكيد الموافقة على الطلب؟'))return}try{const res=await api({action:type==='approve'?'approveRequest':'rejectRequest',requestId:id,note});alert(res.message||(res.success?'تم التنفيذ':'تعذر التنفيذ'));if(res.success)loadRequests()}catch(e){alert('تعذر الاتصال بالنظام')}}
 function statusPill(s){s=String(s||'');let c=s==='Approved'?'approved':s==='Rejected'?'rejected':'pending';let t=s==='Approved'?'مقبول':s==='Rejected'?'مرفوض':'قيد المراجعة';return `<span class="pill ${c}">${t}</span>`}
 function fmt(v){if(!v)return '-';let d=new Date(v);return isNaN(d)?esc(v):d.toLocaleString('ar-EG')}
+function adminLogin(){
+  const pass=prompt('أدخل كلمة مرور المسؤول:');
+  if(pass==='OSIM2026'){
+    const adminBtn=document.createElement('button');
+    adminBtn.className='tab';
+    adminBtn.textContent='لوحة المسؤول';
+    adminBtn.onclick=function(){tab('admin',this)};
+    document.querySelector('.tabs').appendChild(adminBtn);
+    adminBtn.click();
+  }else if(pass!==null){
+    alert('كلمة المرور غير صحيحة.');
+  }
+}
 function tab(id,b){document.querySelectorAll('section').forEach(x=>x.classList.add('hidden'));$(id).classList.remove('hidden');document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));b.classList.add('active');if(id==='admin')loadRequests()}
 function showAdminLogin(){const p=prompt('أدخل كلمة مرور المسؤول:');if(p==='OSIM2026'){const b=document.createElement('button');b.className='tab';b.textContent='لوحة المسؤول';b.onclick=function(){tab('admin',b)};document.querySelector('.tabs').appendChild(b);tab('admin',b)}else if(p!==null)alert('كلمة المرور غير صحيحة.')}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
